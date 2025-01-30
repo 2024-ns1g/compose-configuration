@@ -4,3 +4,4 @@
 !docker-compose.yml
 !config
 !config/*
+!.env.example
