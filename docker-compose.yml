@@ -76,6 +76,11 @@ services:
     image: nginx:latest
     volumes:
       - ./nginx/be.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+    networks:
+      - backend_network
+      - shared_network
 
 networks:
   backend_network:
