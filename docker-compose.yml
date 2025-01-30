@@ -57,9 +57,10 @@ services:
       context: ./backend-api
       dockerfile: Dockerfile
       args:
-        # TODO
+        DATABASE_URL: "postgresql://${POSTGRES_PASSWORD}:${POSTGRES_USER}@postgres:5432/${POSTGRES_DB}"
     environment:
-      # TODO
+        DATABASE_URL: "postgresql://${POSTGRES_PASSWORD}:${POSTGRES_USER}@postgres:5432/${POSTGRES_DB}"
+        # TODO: Add others
     entrypoint: "npm run seedAndStart"
     depends_on:
       postgres:
