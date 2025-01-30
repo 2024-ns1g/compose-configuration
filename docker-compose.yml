@@ -82,11 +82,32 @@ services:
       - backend_network
       - shared_network
 
+  # Frontend
+
+  web-front:
+    build:
+      context: ./web-front-v2
+      dockerfile: Dockerfile
+    networks:
+      # - frontend_network
+      - shared_network
+
+  # Public
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/public.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - shared_network
+    ports:
+      - "80:80"
+
 networks:
   backend_network:
     driver: bridge
-  frontend_network:
-    driver: bridge
+  # frontend_network:
+  #   driver: bridge
   shared_network:
     driver: bridge
 
