@@ -1,4 +1,7 @@
 services:
+
+  # Backend services
+
   postgres:
     image: postgres:15
     environment:
@@ -9,7 +12,11 @@ services:
       - backend_db:/var/lib/postgresql/data
     networks:
       - backend_network
-
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   minio:
     image: minio/minio:latest
     volumes:
@@ -28,7 +35,7 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-      until (/usr/bin/mc config host add myminio http://minio:${MINIO_PORT} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}) do
+      until (/usr/bin/mc config host add myminio http://minio:9000 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}) do
         echo '...waiting...' && sleep 1;
       done;
       /usr/bin/mc mb myminio/${MINIO_BUCKET_NAME};
@@ -45,6 +52,24 @@ services:
     networks:
       - backend_network
 
+  api:
+    build:
+      context: ./backend-api
+      dockerfile: Dockerfile
+      args:
+        # TODO
+    environment:
+      # TODO
+    entrypoint: "npm run seedAndStart"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_started
+      createbuckets:
+        condition: service_completed_successfully
+    networks:
+      - backend_network
 
 networks:
   backend_network:
