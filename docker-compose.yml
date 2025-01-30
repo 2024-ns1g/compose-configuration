@@ -44,21 +44,6 @@ services:
     volumes:
       - backend_valkey:/data
 
-  backend-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        DATABASE_URL: "postgresql://debug:debug@postgres:5432/debug"
-    environment:
-      DATABASE_URL: "postgresql://debug:debug@postgres:5432/debug"
-    ports:
-      - "8080:8080"
-    entrypoint: "npm run startWithInit"
-    # depends_on:
-    #   postgres:
-    #     condition: service_healthy
-
 volumes:
   backend_db:
   backend_minio_data:
