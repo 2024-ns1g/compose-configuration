@@ -72,6 +72,11 @@ services:
     networks:
       - backend_network
 
+  nginx-backend:
+    image: nginx:latest
+    volumes:
+      - ./nginx/be.conf:/etc/nginx/nginx.conf:ro
+
 networks:
   backend_network:
     driver: bridge
