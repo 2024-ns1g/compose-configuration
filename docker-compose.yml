@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: presen_studio
+      POSTGRES_PASSWORD: presen_studio
+      POSTGRES_DB: presen_studio
+    ports:
+      - "5432:5432"
+    volumes:
+      - backend_db:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - backend_minio_data:/export
+      - backend_minio_config:/root/.minio
+    environment:
+      MINIO_ACCESS_KEY: debug_access_key
+      MINIO_SECRET_KEY: debug_secret_key
+    command: server /export --console-address ":9001"
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc config host add myminio http://minio:9000 debug_access_key debug_secret_key) do
+        echo '...waiting...' && sleep 1;
+      done;
+      /usr/bin/mc mb myminio/debug;
+      /usr/bin/mc policy download myminio/debug;
+      exit 0;
+      "
+
+  valkey:
+    image: valkey/valkey:8
+    ports:
+      - "6379:6379"
+    volumes:
+      - backend_valkey:/data
+
+  backend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DATABASE_URL: "postgresql://debug:debug@postgres:5432/debug"
+    environment:
+      DATABASE_URL: "postgresql://debug:debug@postgres:5432/debug"
+    ports:
+      - "8080:8080"
+    entrypoint: "npm run startWithInit"
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
+
+volumes:
+  backend_db:
+  backend_minio_data:
+  backend_minio_config:
+  backend_valkey:
