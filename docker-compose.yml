@@ -2,26 +2,26 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_USER: presen_studio
-      POSTGRES_PASSWORD: presen_studio
-      POSTGRES_DB: presen_studio
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - backend_db:/var/lib/postgresql/data
 
   minio:
     image: minio/minio:latest
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
     volumes:
       - backend_minio_data:/export
       - backend_minio_config:/root/.minio
     environment:
-      MINIO_ACCESS_KEY: debug_access_key
-      MINIO_SECRET_KEY: debug_secret_key
-    command: server /export --console-address ":9001"
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: server /export --console-address ":${MINIO_CONSOLE_PORT}"
 
   createbuckets:
     image: minio/mc
@@ -29,11 +29,11 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-      until (/usr/bin/mc config host add myminio http://minio:9000 debug_access_key debug_secret_key) do
+      until (/usr/bin/mc config host add myminio http://minio:${MINIO_PORT} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}) do
         echo '...waiting...' && sleep 1;
       done;
-      /usr/bin/mc mb myminio/debug;
-      /usr/bin/mc policy download myminio/debug;
+      /usr/bin/mc mb myminio/${MINIO_BUCKET_NAME};
+      /usr/bin/mc policy download myminio/${MINIO_BUCKET_NAME};
       exit 0;
       "
 
