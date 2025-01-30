@@ -44,6 +44,15 @@ services:
     volumes:
       - backend_valkey:/data
 
+
+networks:
+  backend_network:
+    driver: bridge
+  frontend_network:
+    driver: bridge
+  shared_network:
+    driver: bridge
+
 volumes:
   backend_db:
   backend_minio_data:
