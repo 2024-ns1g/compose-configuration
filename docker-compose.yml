@@ -65,6 +65,10 @@ services:
         DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
     environment:
         DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
+        VALKEY_HOST: ${VALKEY_HOST}
+        VALKEY_PORT: ${VALKEY_PORT}
+        MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+        MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
         # TODO: Add others
     depends_on:
       postgres:
