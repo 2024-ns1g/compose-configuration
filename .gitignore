@@ -3,5 +3,5 @@
 !.gitignore
 !docker-compose.yml
 !config
-!config/*
+!config/**/*
 !.env.example
