@@ -95,6 +95,9 @@ services:
       - frontend_network
     ports:
       - "${PUBLIC_PORT}:80"
+    depends_on:
+      - api
+      - web-front
 
 networks:
   backend_network:
