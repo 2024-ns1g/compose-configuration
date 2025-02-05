@@ -91,6 +91,8 @@ services:
     networks:
       # - frontend_network
       - shared_network
+    expose:
+      - "3000:80"
 
   # Public
 
