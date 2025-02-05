@@ -69,6 +69,8 @@ services:
         VALKEY_PORT: ${VALKEY_PORT}
         MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
         MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+        PRIMARY_TOKEN_SECRET: ${BACKEND_PRIMARY_TOKEN_SECRET}
+        SESSION_TOKEN_SECRET: ${BACKEND_SESSION_TOKEN_SECRET}
         # TODO: Add others
     depends_on:
       postgres:
