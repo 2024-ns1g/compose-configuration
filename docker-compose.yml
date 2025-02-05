@@ -89,7 +89,7 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      - ./nginx/public.conf:/etc/nginx/nginx.conf:ro
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
       - backend_network
       - frontend_network
