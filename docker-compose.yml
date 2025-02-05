@@ -9,7 +9,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - backend_db:/var/lib/postgresql/data
+      # - backend_db:/var/lib/postgresql/data
+      - ./.data/postgres:/var/lib/postgresql/data
     networks:
       - backend_network
     healthcheck:
@@ -21,8 +22,10 @@ services:
   minio:
     image: minio/minio:latest
     volumes:
-      - backend_minio_data:/export
-      - backend_minio_config:/root/.minio
+      # - backend_minio_data:/export
+      # - backend_minio_config:/root/.minio
+      - ./.data/minio/data:/export
+      - ./.data/minio/config:/root/.minio
     environment:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -58,9 +61,9 @@ services:
       context: ./backend-api
       dockerfile: Dockerfile
       args:
-        DATABASE_URL: "postgresql://${POSTGRES_PASSWORD}:${POSTGRES_USER}@postgres:5432/${POSTGRES_DB}"
+        DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
     environment:
-        DATABASE_URL: "postgresql://${POSTGRES_PASSWORD}:${POSTGRES_USER}@postgres:5432/${POSTGRES_DB}"
+        DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
         # TODO: Add others
     depends_on:
       postgres:
@@ -107,8 +110,8 @@ networks:
   # shared_network:
   #   driver: bridge
 
-volumes:
-  backend_db:
-  backend_minio_data:
-  backend_minio_config:
-  backend_valkey:
+# volumes:
+#   backend_db:
+#   backend_minio_data:
+#   backend_minio_config:
+#   backend_valkey:
