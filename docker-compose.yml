@@ -72,16 +72,6 @@ services:
     networks:
       - backend_network
 
-  nginx-backend:
-    image: nginx:latest
-    volumes:
-      - ./nginx/be.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - api
-    networks:
-      - backend_network
-      - shared_network
-
   # Frontend
 
   web-front:
@@ -89,8 +79,8 @@ services:
       context: ./web-front-v2
       dockerfile: Dockerfile
     networks:
-      # - frontend_network
-      - shared_network
+      - frontend_network
+      # - shared_network
     expose:
       - "3000:80"
 
@@ -101,17 +91,18 @@ services:
     volumes:
       - ./nginx/public.conf:/etc/nginx/nginx.conf:ro
     networks:
-      - shared_network
+      - backend_network
+      - frontend_network
     ports:
       - "${PUBLIC_PORT}:80"
 
 networks:
   backend_network:
     driver: bridge
-  # frontend_network:
-  #   driver: bridge
-  shared_network:
+  frontend_network:
     driver: bridge
+  # shared_network:
+  #   driver: bridge
 
 volumes:
   backend_db:
