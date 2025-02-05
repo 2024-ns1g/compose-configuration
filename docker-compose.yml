@@ -52,7 +52,8 @@ services:
   valkey:
     image: valkey/valkey:8
     volumes:
-      - backend_valkey:/data
+      # - backend_valkey:/data
+      - ./.data/valkey:/data
     networks:
       - backend_network
 
